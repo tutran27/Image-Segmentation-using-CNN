@@ -1,33 +1,18 @@
-🐶🐱 Image Segmentation with CNN (Oxford-IIIT Pet, PyTorch)
+# 🐶🐱 Image Segmentation with CNN (Oxford-IIIT Pet, PyTorch)
 
-🧩 Task: Semantic segmentation các ảnh thú cưng (mèo / chó), dự đoán mask pixel-wise cho từng con vật + background.
+## 🚀 Overview
+Mô hình segmentation thú cưng (mèo/chó) dùng CNN, triển khai bằng **PyTorch**.
 
-📚 Dataset: Oxford-IIIT Pet
+## 📚 Dataset
+- [Oxford-IIIT Pet Dataset](https://www.robots.ox.ac.uk/~vgg/data/pets/)
+- 3 lớp: background / border / pet.
 
-~7k ảnh mèo & chó, nhiều giống khác nhau
+## 🧠 Model
+- Kiến trúc encoder–decoder kiểu U-Net.
+- Loss: `CrossEntropyLoss`, optimizer: `Adam`.
 
-Sử dụng annotation segmentation (trimap) → convert về 3 lớp: background / border / pet.
+## ⚙️ Usage
 
-🧠 Model:
+```bash
+pip install -r requirements.txt
 
-Kiến trúc kiểu U-Net / encoder-decoder CNN viết bằng PyTorch
-
-Backbone CNN trích đặc trưng, decoder upsample + skip connection.
-
-⚙️ Training:
-
-Data augmentation bằng torchvision.transforms
-
-Loss: CrossEntropyLoss cho 3 lớp
-
-Optimizer: Adam, có scheduler LR (optional)
-
-Train / val loader dùng DataLoader với custom Dataset cho Oxford-IIIT Pet.
-
-📈 Monitoring & Eval:
-
-Log loss / IoU / pixel accuracy theo epoch
-
-Lưu checkpoint tốt nhất vào models/
-
-Notebook / script visualize: input – ground truth – predicted mask.
