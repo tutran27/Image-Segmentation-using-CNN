@@ -18,10 +18,10 @@ def Trainer(model, critertion, optimizer, train_set, train_loader, test_loader, 
             total_loss+=loss.item()
 
         train_loss=total_loss/len(train_loader)
-        print(f"Epoch: [{epoch+1}/{epoch_max}] --- Train Loss = {train_loss}")
+        # print(f"Epoch: [{epoch+1}/{epoch_max}] --- Train Loss = {train_loss}")
         
         predict_show(img_test, mask_test, model, device)
         # Tam thoi tat de tiet kiem tinh toan
-        # test_loss=evaluate(model, critertion, test_loader, device)     
-        # print(f"Epoch: [{epoch+1}/{epoch_max}] --- Train Loss = {train_loss} ----- Test Loss = {test_loss}")
+        test_loss=evaluate(model, critertion, test_loader, device)     
+        print(f"Epoch: [{epoch+1}/{epoch_max}] --- Train Loss = {train_loss} ----- Test Loss = {test_loss}")
        

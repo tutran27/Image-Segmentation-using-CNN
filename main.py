@@ -11,25 +11,29 @@ from data_loader import Loader
 from model import Segmentation_with_CNN
 from Trainer import Trainer
 
+#1. Tạo volume tên ..... để lưu data, sau này load lại đỡ tốn tg
 volume = modal.Volume.from_name("my-segmentation-data", create_if_missing=True)
 
 DATA_DIR = "/data"
-MODEL_DIR = "/data/models"
 
-# 1. THÊM: Định nghĩa Mount để đưa toàn bộ file local (.py) lên cloud
-mount_code = modal.Mount.from_local_dir(".", remote_path="/root") # <--- THÊM
-
+# 2. Tạo một Modal app
 app = modal.App("segmentation-project")
+
 
 image = (
     modal.Image.debian_slim()
-    # 2. THÊM: Thư viện hệ thống bắt buộc cho matplotlib/opencv
-    .apt_install("libgl1-mesa-glx", "libglib2.0-0") # <--- THÊM
+    .apt_install("libgl1-mesa-glx", "libglib2.0-0")
     .pip_install(
         "torch",
         "torchvision",
         "numpy",
         "matplotlib",
+    )
+    # Thay cho Mount: đưa toàn bộ project folder lên container
+    .add_local_dir(
+        ".",              # thư mục hiện tại (project)
+        remote_path="/root",  # trong container
+        # copy=False (default) = chỉ “đính” khi container start, build nhanh hơn
     )
 )
 
@@ -37,14 +41,11 @@ image = (
     image=image, 
     gpu='L4', 
     volumes={DATA_DIR: volume}, 
-    mounts=[mount_code], # 3. THÊM: Gắn code vào function để import được file khác
     timeout=3600 
 )
 def train():
     print(f"Training on device: {'cuda' if torch.cuda.is_available() else 'cpu'}")
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-    os.makedirs(MODEL_DIR, exist_ok=True)
 
     print("Loading dataset...")
     # Lưu ý: Đảm bảo load_train_set tải/đọc dữ liệu từ DATA_DIR
@@ -64,11 +65,7 @@ def train():
     print("Start Training...")
     trained_model = Trainer(model, criterion, optimizer, train_set, train_loader, test_loader, epoch_max, lr, device)
     
-    save_path = f"{MODEL_DIR}/unet_model.pth"
-    torch.save(trained_model.state_dict(), save_path)
-    print(f"Model saved to {save_path}")
-    
-    volume.commit()
+ 
 
 @app.local_entrypoint()
 def main():
