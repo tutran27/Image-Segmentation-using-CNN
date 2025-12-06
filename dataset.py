@@ -19,6 +19,6 @@ def load_train_set():
     ])
 
 
-    train_set=OxfordIIITPet(root='./data',split='trainval', target_transform = target_transform, target_types='segmentation',transform=transform,download=True)
-    test_set=OxfordIIITPet(root='./data',split='test',target_types='segmentation', target_transform = target_transform, transform=transform,download=True)
+    train_set=OxfordIIITPet(root='./data',split='trainval', target_transform = target_transform, target_types='segmentation',transform=transform,download=False)
+    test_set=OxfordIIITPet(root='./data',split='test',target_types='segmentation', target_transform = target_transform, transform=transform,download=False)
     return train_set,test_set
