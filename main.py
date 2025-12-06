@@ -1,4 +1,4 @@
-import modal
+# import modal
 import torch 
 import torch.nn as nn
 import torch.optim as optim
@@ -15,46 +15,46 @@ from model import Segmentation_with_CNN
 from evaluate import evaluate
 from Trainer import Trainer
 
-app=modal.App()
+# app=modal.App()
 
-image = (
-    modal.Image.debian_slim()
-    .pip_install(
-        "torch",
-        "torchvision",
-        "numpy",
-        "matplotlib",
-    )
-)
+# image = (
+#     modal.Image.debian_slim()
+#     .pip_install(
+#         "torch",
+#         "torchvision",
+#         "numpy",
+#         "matplotlib",
+#     )
+# )
 
-@app.function(image=image, gpu='L4')
-def train():
+# @app.function(image=image, gpu='L4')
+# def train():
     # Load dataset
-    device='cuda' if torch.cuda.is_available() else 'cpu'
+device='cuda' if torch.cuda.is_available() else 'cpu'
 
-    train_set, test_set = load_train_set()
-    img_test, mask_test = train_set[5]
-    show_image(img_test, mask_test)
+train_set, test_set = load_train_set()
+img_test, mask_test = train_set[5]
+show_image(img_test, mask_test)
 
-    train_loader, test_loader=Loader(train_set, test_set)
+train_loader, test_loader=Loader(train_set, test_set)
 
-    model=Segmentation_with_CNN(n_channels=3, n_classes=3)
+model=Segmentation_with_CNN(n_channels=3, n_classes=3)
 
     # Set model
-    model=model.to(device)
-    lr=1e-3
-    criterion=nn.CrossEntropyLoss()
-    optimizer=optim.Adam(model.parameters(), lr=lr)
+model=model.to(device)
+lr=1e-3
+criterion=nn.CrossEntropyLoss()
+optimizer=optim.Adam(model.parameters(), lr=lr)
 
-    epoch_max=20
+epoch_max=20
     
 
-    Trainer(model, criterion, optimizer,train_set, train_loader, test_loader,epoch_max, lr, device)
+Trainer(model, criterion, optimizer,train_set, train_loader, test_loader,epoch_max, lr, device)
 
-@app.local_entrypoint()
-def main():
-    # gọi remote -> chạy trên Modal, bắt đầu trừ credits
-    train.remote()
+# @app.local_entrypoint()
+# def main():
+#     # gọi remote -> chạy trên Modal, bắt đầu trừ credits
+#     train.remote()
 
 
 
