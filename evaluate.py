@@ -9,6 +9,6 @@ def evaluate(model, criterion, test_loader, device):
             out=model(img)
             loss=criterion(out, mask)
             loss_total+=loss.item()
-        loss_test=loss_total.len(test_loader)
+        loss_test=loss_total/len(test_loader)
 
     return loss_test
