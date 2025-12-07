@@ -29,11 +29,10 @@ image = (
         "numpy",
         "matplotlib",
     )
-    # Thay cho Mount: đưa toàn bộ project folder lên container
+    
     .add_local_dir(
         ".",              # thư mục hiện tại (project)
         remote_path="/root",  # trong container
-        # copy=False (default) = chỉ “đính” khi container start, build nhanh hơn
     )
 )
 
