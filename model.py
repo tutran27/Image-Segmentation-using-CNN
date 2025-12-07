@@ -22,8 +22,9 @@ class Decoder_Diagram(nn.Module):
             nn.ReLU(),
             nn.Upsample(scale_factor=2, mode='nearest')
         )
-    def forward(self, x):
-        x=self.conv_block(x)
+    def forward(self, x1, x2):
+        x1=self.conv_block(x1)
+        x=x1+x2
         return x
     
 class Segmentation_with_CNN(nn.Module):
@@ -51,16 +52,16 @@ class Segmentation_with_CNN(nn.Module):
         )
 
     def forward(self, x):
-      x=self.encoder_1(x)
-      x=self.encoder_2(x)
-      x=self.encoder_3(x)
-      x=self.encoder_4(x)
-      x=self.encoder_5(x)
+      x1=self.encoder_1(x)
+      x2=self.encoder_2(x1)
+      x3=self.encoder_3(x2)
+      x4=self.encoder_4(x3)
+      x5=self.encoder_5(x4)
 
-      x=self.decoder_1(x)
-      x=self.decoder_2(x)
-      x=self.decoder_3(x)
-      x=self.decoder_4(x)
+      x=self.decoder_1(x5, x4)
+      x=self.decoder_2(x4, x3)
+      x=self.decoder_3(x3, x2)
+      x=self.decoder_4(x2, x1)
 
       x=self.out(x)
 
